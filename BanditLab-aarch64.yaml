@@ -147,7 +147,9 @@ runcmd:
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/msuhanov/dfir_ntfs/archive/1.1.18.tar.gz
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cisagov/ioc-scanner.git
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cclgroupltd/ccl_chromium_reader.git
- - sudo -u ubuntu sh -c 'git clone https://github.com/CISOfy/lynis $HOME/tools/lynis'
+ - sudo -u ubuntu sh -c 'rm -rf $HOME/tools/chainsaw/sigma/&&git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma/'
+ - sudo -u ubuntu sh -c 'nuclei -update'
+ - sudo -u ubuntu sh -c '$HOME/tools/hayabusa/hayabusa-2.16.0-lin-aarch64-gnu update-rules'
  - sudo -u ubuntu chmod 755 /home/ubuntu/pyapps/bin/hindsight.py
  - sudo -u ubuntu chmod 755 /home/ubuntu/pyapps/bin/hindsight_gui.py
  - sudo -u ubuntu sh -c 'sudo snap install multipass-sshfs'
