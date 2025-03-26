@@ -138,7 +138,8 @@ packages:
 
 runcmd:
  - sudo -u ubuntu sh -c 'curl -skL https://github.com/0CM/BanditLab/raw/main/packages/BanditLabGetTools_aarch64.sh | bash'
- - sudo -u ubuntu sh -c 'git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma'
+ - sudo -u ubuntu sh -c 'rm -rf $HOME/tools/chainsaw/sigma/&&git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma/'
+ - sudo -u ubuntu sh -c 'git clone https://github.com/WithSecureLabs/chainsaw.git && mv chainsaw/{rules,mappings} "$HOME/tools/chainsaw/" && rm -rf chainsaw'
  - sudo -u ubuntu sh -c 'git clone https://github.com/CISOfy/lynis $HOME/tools/lynis'
  - sudo -u ubuntu python3 -m venv /home/ubuntu/pyapps
  - sudo -u ubuntu python3 -m venv /home/ubuntu/pyflare
@@ -147,7 +148,6 @@ runcmd:
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/msuhanov/dfir_ntfs/archive/1.1.18.tar.gz
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cisagov/ioc-scanner.git
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cclgroupltd/ccl_chromium_reader.git
- - sudo -u ubuntu sh -c 'rm -rf $HOME/tools/chainsaw/sigma/&&git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma/'
  - sudo -u ubuntu sh -c 'nuclei -update'
  - sudo -u ubuntu sh -c '$HOME/tools/hayabusa/hayabusa-2.16.0-lin-aarch64-gnu update-rules'
  - sudo -u ubuntu chmod 755 /home/ubuntu/pyapps/bin/hindsight.py
@@ -186,6 +186,7 @@ write_files:
         alias hindsight="source $HOME/pyapps/bin/activate&&hindsight.py"
         alias hindsight_gui="source $HOME/pyapps/bin/activate&&hindsight_gui.py"
         alias browserexport="source $HOME/pyapps/bin/activate&&browserexport"
+        alias browserexport="source $HOME/pyapps/bin/activate&&olevba"
         alias prefetch="source $HOME/pyapps/bin/activate&&prefetch.py"
         alias xlsxgrep="source $HOME/pyapps/bin/activate&&xlsxgrep"
         alias ioc-scan="source $HOME/pyapps/bin/activate&&ioc-scan"
@@ -193,7 +194,8 @@ write_files:
         alias installazurecli="curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash"
         alias installgcloudcli="sudo snap install google-cloud-cli --classic"
         alias installgcloudsdk="sudo snap install google-cloud-sdk --classic"
-        alias installpwsh="sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/PowerShell/PowerShell/releases/download/v7.4.4/powershell-7.4.4-linux-arm64.tar.gz | tar -xz -C $HOME/tools/ --one-top-level=powershell && chmod 755 $HOME/tools/powershell/pwsh && sudo ln -s $HOME/tools/powershell/pwsh /usr/bin/pwsh'"
+        alias chainsaw="/home/ubuntu/tools/chainsaw/chainsaw"
+        alias installpwsh="sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/PowerShell/PowerShell/releases/download/v7.5.0/powershell-7.5.0-linux-arm64.tar.gz | tar -xz -C $HOME/tools/ --one-top-level=powershell && chmod 755 $HOME/tools/powershell/pwsh && sudo ln -s $HOME/tools/powershell/pwsh /usr/bin/pwsh'"
         
         
     append: true
