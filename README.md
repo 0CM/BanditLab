@@ -22,20 +22,20 @@ Installation:
 
 Lab Deployment:
 ----------------
-The following command will create a VM named BanditLab with 2GB of RAM and a 15GB disk. 
+The following command will create a VM named BanditLab with 2 CPU cores, 4GB of RAM and a 20GB disk. 
  - You can adjust the VM name and hardware specifications according to your preferences.
 
 Cloud-Init for the MacOS or ARM architecture: 
 ```
 
-multipass launch -n BanditLab -m 2GB -d 15G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-aarch64.yaml
+multipass launch -n BanditLab -c2 -m 4GB -d 20G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-aarch64.yaml
 
 ```
 
 Cloud-Init for the X86_64 architecture: 
 ```
 
-multipass launch -n BanditLab -m 2GB -d 15G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-x86-64.yaml
+multipass launch -n BanditLab -c2 -m 4GB -d 20G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-x86-64.yaml
 
 ```
 
@@ -98,8 +98,6 @@ Forensics Tools:
   * **RECmd** version 2.0.0.0 - Command line Registry tool 
   * **rla** version 2.0.0.0 - Replay transaction logs and update Registry hives 
   * **RecentFileCacheParser** version 1.5.0.0
-  * **SQLECmd** version 1.0.0.0
-  * **SrumECmd** version 0.5.1.0
   * **WxTCmd** version 1.0.0.0
   * **bstrings** version 1.5.2.0
 
@@ -169,6 +167,8 @@ Forensics Tools:
 
 **Python Libs and Tools:**
 --------------------------
+Python tools are in pyapps virtenv: activate it with "pyapps" or "source pyapps/bin/activate"
+
 * **peepdf** - [Github Repository](https://github.com/jesparza/peepdf) - tool to explore 
 PDF files, it can parse different versions of a file, object streams and encrypted files.
 * **pdfid** - [Github Repository](https://github.com/DidierStevens)
@@ -185,13 +185,11 @@ PDF files, it can parse different versions of a file, object streams and encrypt
 	  - Parser for Windows XP - Windows 10 Prefetch files 	  
 * **xlsxgrep** - [Github Repository](https://github.com/zazuum/xlsxgrep)
 	  - tool to search text in XLSX, XLS, CSV, TSV and ODS files.	
-* **flare-capa** - [Github Repository](https://github.com/mandiant/capa)
-	  - capa detects capabilities in executable files. You run it against a PE,
-	    ELF, .NET module, shellcode file, or a sandbox report
 * **DomainTools** - [Github Repository](https://github.com/DomainTools/python_api)
 	  - The DomainTools Python API Wrapper provides an interface to work with 
 	    cybersecurity and related data tools provided by the Iris Investigate.
-
+* **Prefetcher** - [Github Repository](https://github.com/ajread4/prefetcher)
+	  - Windows Prefetch Parser
 
 
 
@@ -234,8 +232,6 @@ PDF files, it can parse different versions of a file, object streams and encrypt
 	  - knowledge base of forensic artifacts (data files)
 * **forensics-colorize**
 	  - show differences between files using color graphics
-* **galleta**
-	  - Internet Explorer cookie forensic analysis tool
 * **getxattr**
 	  - getxattr() retrieves the value of the extended attribute identified 
 	     by name and associated with the given path in the file system.
@@ -257,18 +253,10 @@ PDF files, it can parse different versions of a file, object streams and encrypt
 	  - tool to help recover deleted files on ext3 filesystems
 * **libimage-exiftool-perl**
 	  - Exiftool - program to read and write meta information in multimedia files
-* **unblob**
-	  - unblob is an accurate, fast, and easy-to-use extraction suite. It parses unknown
-	    binary blobs for more than 30 different archive, compression, and file-system 
-	    formats, extracts their content recursively.
 * **binvis**
 	  - project to visualize binary-file structures in unique ways
 * **testdisk**
 	  - partition scanner and disk recovery tool, and PhotoRec file recovery tool
-* **chntpw**
-	  - NT SAM password recovery utility
-* **geoip-bin**
-	  - IP lookup command line tools that use the GeoIP library
 * **mblaze**
 	  - UNIX utilities to deal with Maildir
 * **mboxgrep**

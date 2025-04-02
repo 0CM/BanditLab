@@ -107,10 +107,8 @@ packages:
   - yara
   - ext3grep
   - libimage-exiftool-perl
-  - unblob
   - binvis
   - testdisk
-  - chntpw
   - geoip-bin
   - mblaze
   - mboxgrep
@@ -137,14 +135,12 @@ packages:
 
 
 runcmd:
+ - sudo -u ubuntu python3 -m venv /home/ubuntu/pyapps
  - sudo -u ubuntu sh -c 'curl -skL https://github.com/0CM/BanditLab/raw/main/packages/BanditLabGetTools_aarch64.sh | bash'
  - sudo -u ubuntu sh -c 'rm -rf $HOME/tools/chainsaw/sigma/&&git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma/'
  - sudo -u ubuntu sh -c 'git clone https://github.com/WithSecureLabs/chainsaw.git && mv chainsaw/{rules,mappings} "$HOME/tools/chainsaw/" && rm -rf chainsaw'
  - sudo -u ubuntu sh -c 'git clone https://github.com/CISOfy/lynis $HOME/tools/lynis'
- - sudo -u ubuntu python3 -m venv /home/ubuntu/pyapps
- - sudo -u ubuntu python3 -m venv /home/ubuntu/pyflare
- - sudo -u ubuntu /home/ubuntu/pyflare/bin/python3 -m pip install flare-capa
- - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install peepdf-3 pdfid oletools pyhindsight browserexport windowsprefetch xlsxgrep tabulate dnspython wheel domaintools_api evtxtract
+ - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install peepdf-3 pdfid oletools pyhindsight libscca-python auto-archiver xlsxgrep tabulate dnspython wheel domaintools_api evtxtract
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/msuhanov/dfir_ntfs/archive/1.1.18.tar.gz
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cisagov/ioc-scanner.git
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cclgroupltd/ccl_chromium_reader.git
@@ -153,6 +149,9 @@ runcmd:
  - sudo -u ubuntu chmod 755 /home/ubuntu/pyapps/bin/hindsight.py
  - sudo -u ubuntu chmod 755 /home/ubuntu/pyapps/bin/hindsight_gui.py
  - sudo -u ubuntu sh -c 'sudo snap install multipass-sshfs'
+ 
+ 
+
  
 write_files:
   - path: /home/ubuntu/.bashrc
@@ -187,7 +186,9 @@ write_files:
         alias hindsight_gui="source $HOME/pyapps/bin/activate&&hindsight_gui.py"
         alias browserexport="source $HOME/pyapps/bin/activate&&browserexport"
         alias browserexport="source $HOME/pyapps/bin/activate&&olevba"
-        alias prefetch="source $HOME/pyapps/bin/activate&&prefetch.py"
+        alias prefetch="source $HOME/pyapps/bin/activate&&prefetcher.py"
+        alias prefetcher="source $HOME/pyapps/bin/activate&&prefetcher.py"
+        alias auto-archiver="source $HOME/pyapps/bin/activate&&auto-archiver"
         alias xlsxgrep="source $HOME/pyapps/bin/activate&&xlsxgrep"
         alias ioc-scan="source $HOME/pyapps/bin/activate&&ioc-scan"
         alias capa="source $HOME/pyflare/bin/activate&&capa"
