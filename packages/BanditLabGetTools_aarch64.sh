@@ -16,4 +16,4 @@ sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/ericch
 sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/vt-cli_aarch64-20240720.tar.gz | tar -xz -C "$HOME"/tools/vt && chmod 755 "$HOME"/tools/vt/vt && sudo ln -s "$HOME"/tools/vt/vt /usr/bin/vt'
 sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/projectdiscovery/nuclei/releases/download/v3.3.0/nuclei_3.3.0_linux_arm64.zip | bsdtar -xvf- -C "$HOME"/tools/nuclei && chmod 755 "$HOME"/tools/nuclei/nuclei && sudo ln -s "$HOME"/tools/nuclei/nuclei /usr/bin/nuclei'
 sudo -u ubuntu sh -c 'nuclei -update'
-sudo -u ubuntu sh -c 'wget --no-check-certificate https://raw.githubusercontent.com/ajread4/prefetcher/refs/heads/main/prefetcher.py -O pyapps/bin/prefetcher.py && chmod 755  pyapps/bin/prefetcher.py'
+sudo -u ubuntu sh -c 'wget --no-check-certificate https://raw.githubusercontent.com/ajread4/prefetcher/refs/heads/main/prefetcher.py -O /home/ubuntu/pyapps/bin/prefetcher.py && chmod 755  /home/ubuntu/pyapps/bin/prefetcher.py'
