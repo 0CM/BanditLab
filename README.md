@@ -190,8 +190,10 @@ PDF files, it can parse different versions of a file, object streams and encrypt
 	    cybersecurity and related data tools provided by the Iris Investigate.
 * **Prefetcher** - [Github Repository](https://github.com/ajread4/prefetcher)
 	  - Windows Prefetch Parser
-
-
+* **parse_smsdb** - [Github Repository](https://github.com/h4x0r/parse_sms.db)
+	  - Extracts iMessage, RCS, SMS/MMS chat history from iOS database file.
+* **OneDrive Parser** - [Github Repository](https://github.com/ydkhatri/OneDrive/)
+	  - A parser for OneDrive .odl files.
 
 **Optional Tools**:
 -------------------

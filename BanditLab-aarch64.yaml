@@ -131,6 +131,7 @@ packages:
   - attr
   - poppler-utils
   - xq
+  - libplist-utils
 
 
 
@@ -140,7 +141,7 @@ runcmd:
  - sudo -u ubuntu sh -c 'rm -rf $HOME/tools/chainsaw/sigma/&&git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma/'
  - sudo -u ubuntu sh -c 'git clone https://github.com/WithSecureLabs/chainsaw.git && mv chainsaw/{rules,mappings} "$HOME/tools/chainsaw/" && rm -rf chainsaw'
  - sudo -u ubuntu sh -c 'git clone https://github.com/CISOfy/lynis $HOME/tools/lynis'
- - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install peepdf-3 pdfid oletools pyhindsight libscca-python auto-archiver xlsxgrep tabulate dnspython wheel domaintools_api evtxtract
+ - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install peepdf-3 pdfid oletools pyhindsight libscca-python auto-archiver xlsxgrep tabulate dnspython wheel domaintools_api evtxtract parse_smsdb pycryptodome construct
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/msuhanov/dfir_ntfs/archive/1.1.18.tar.gz
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cisagov/ioc-scanner.git
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cclgroupltd/ccl_chromium_reader.git
@@ -185,13 +186,14 @@ write_files:
         alias hindsight="source $HOME/pyapps/bin/activate&&hindsight.py"
         alias hindsight_gui="source $HOME/pyapps/bin/activate&&hindsight_gui.py"
         alias browserexport="source $HOME/pyapps/bin/activate&&browserexport"
-        alias browserexport="source $HOME/pyapps/bin/activate&&olevba"
+        alias parse_smsdb="source $HOME/pyapps/bin/activate&&parse_smsdb"
+        alias olevba="source $HOME/pyapps/bin/activate&&olevba"
         alias prefetch="source $HOME/pyapps/bin/activate&&prefetcher.py"
         alias prefetcher="source $HOME/pyapps/bin/activate&&prefetcher.py"
         alias auto-archiver="source $HOME/pyapps/bin/activate&&auto-archiver"
         alias xlsxgrep="source $HOME/pyapps/bin/activate&&xlsxgrep"
         alias ioc-scan="source $HOME/pyapps/bin/activate&&ioc-scan"
-        alias capa="source $HOME/pyflare/bin/activate&&capa"
+        alias odl="source $HOME/pyapps/bin/activate&&odl.py"
         alias installazurecli="curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash"
         alias installgcloudcli="sudo snap install google-cloud-cli --classic"
         alias installgcloudsdk="sudo snap install google-cloud-sdk --classic"
