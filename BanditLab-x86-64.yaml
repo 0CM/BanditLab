@@ -139,7 +139,7 @@ runcmd:
  - sudo -u ubuntu python3 -m venv /home/ubuntu/pyapps
  - sudo -u ubuntu sh -c 'curl -skL https://github.com/0CM/BanditLab/raw/main/packages/BanditLabGetTools_x86_64.sh | bash'
  - sudo -u ubuntu sh -c 'rm -rf $HOME/tools/chainsaw/sigma/&&git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma/'
- - sudo -u ubuntu sh -c 'git clone https://github.com/WithSecureLabs/chainsaw.git && mv chainsaw/{rules,mappings} "$HOME/tools/chainsaw/" && rm -rf chainsaw'
+ - sudo -u ubuntu sh -c 'git clone https://github.com/WithSecureLabs/chainsaw.git && mv chainsaw/mappings chainsaw/rules "$HOME/tools/chainsaw/" && rm -rf chainsaw'
  - sudo -u ubuntu sh -c 'git clone https://github.com/CISOfy/lynis $HOME/tools/lynis'
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install peepdf-3 pdfid oletools pyhindsight browserexport libscca-python auto-archiver xlsxgrep tabulate dnspython wheel domaintools_api evtxtract parse_smsdb pycryptodome construct
  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/msuhanov/dfir_ntfs/archive/1.1.18.tar.gz
@@ -186,6 +186,7 @@ write_files:
         alias olevba="source $HOME/pyapps/bin/activate&&olevba"
         alias prefetch="source $HOME/pyapps/bin/activate&&prefetcher.py"
         alias prefetcher="source $HOME/pyapps/bin/activate&&prefetcher.py"
+        alias odl="source $HOME/pyapps/bin/activate&&odl.py"
         alias auto-archiver="source $HOME/pyapps/bin/activate&&auto-archiver"
         alias xlsxgrep="source $HOME/pyapps/bin/activate&&xlsxgrep"
         alias ioc-scan="source $HOME/pyapps/bin/activate&&ioc-scan"
