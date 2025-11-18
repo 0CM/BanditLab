@@ -25,17 +25,10 @@ Lab Deployment:
 The following command will create a VM named BanditLab with 2 CPU cores, 4GB of RAM and a 20GB disk. 
  - You can adjust the VM name and hardware specifications according to your preferences.
 
-Cloud-Init for the MacOS or ARM architecture: 
+Universal Cloud-Init for both ARM and X86x64 architectures: 
 ```
 
-multipass launch -n BanditLab -c2 -m 4GB -d 20G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-aarch64.yaml
-
-```
-
-Cloud-Init for the X86_64 architecture: 
-```
-
-multipass launch -n BanditLab -c2 -m 4GB -d 20G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-x86-64.yaml
+multipass launch -n BanditLab -c2 -m 4GB -d 20G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-Universal.yaml
 
 ```
 
@@ -178,9 +171,7 @@ PDF files, it can parse different versions of a file, object streams and encrypt
 * **oletools** - [Github Repository](https://github.com/decalage2/oletools)
 	  - oletools is a package of python tools to analyze Microsoft OLE2 files
 * **hindsight** - [Github Repository](https://github.com/obsidianforensics/hindsight)
-	  - web artefacts and browsing history from Chromium-based web browsers
-* **browserexport** - [Github Repository](https://github.com/seanbreckenridge/browserexport)
-	  - web artefacts and browsing history from Chrome-based web browsers,Firefox, Safari and more. 	  
+	  - web artefacts and browsing history from Chromium-based web browsers 
 * **windowsprefetch** - [Github Repository](https://github.com/PoorBillionaire/Windows-Prefetch-Parser)
 	  - Parser for Windows XP - Windows 10 Prefetch files 	  
 * **xlsxgrep** - [Github Repository](https://github.com/zazuum/xlsxgrep)
@@ -192,8 +183,11 @@ PDF files, it can parse different versions of a file, object streams and encrypt
 	  - Windows Prefetch Parser
 * **parse_smsdb** - [Github Repository](https://github.com/h4x0r/parse_sms.db)
 	  - Extracts iMessage, RCS, SMS/MMS chat history from iOS database file.
-* **OneDrive Parser** - [Github Repository](https://github.com/ydkhatri/OneDrive/)
-	  - A parser for OneDrive .odl files.
+* **Plaso** - [Github Repository](https://github.com/log2timeline/plaso)
+	  - Plaso / Log2timeline, super timeline all the things
+
+* **edrparser** - [Github Repository](TBD)
+	  - Parsing automation pipeline for EDR acquisition / triage packages (Windows artefacts)      
 
 **Optional Tools**:
 -------------------
