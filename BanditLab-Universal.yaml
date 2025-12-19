@@ -1,5 +1,6 @@
 #cloud-config
 #Description: BanditLab universal cloud-init config
+#Author: Jiri Holoska | NIS Threat Response
 #Version: v2025.11.13.3
 #Created: 2025-11-13
 #Target: Ubuntu 22.04 (jammy) and/or 24.04 (noble)
@@ -228,7 +229,7 @@ write_files:
         echo '#######################################'
         
         
-        sudo apt install -y afflib-tools attr cewl dc3dd dislocker dnsrecon ewf-tools exifprobe fcrackzip forensic-artifacts forensics-colorize galleta hashdeep pff-tools mc recoverdm scrounge-ntfs sleuthkit ssdeep wipe yara ext3grep libimage-exiftool-perl testdisk geoip-bin mblaze mboxgrep pev unar tesseract-ocr libvshadow-utils dotnet-runtime-6.0 python3.12 python3.12-venv python3-pip extundelete libarchive-tools ugrep apt-transport-https parallel nikto jq xmlstarlet attr poppler-utils xq libplist-utils
+        sudo apt install -y afflib-tools attr cewl dc3dd dislocker dnsrecon ewf-tools exifprobe fcrackzip forensic-artifacts forensics-colorize galleta hashdeep pff-tools mc recoverdm scrounge-ntfs sleuthkit ssdeep wipe yara ext3grep libimage-exiftool-perl testdisk geoip-bin mblaze mboxgrep pev unar tesseract-ocr libvshadow-utils dotnet-runtime-6.0 python3.12 python3.12-venv python3-pip extundelete libarchive-tools ugrep apt-transport-https parallel nikto jq xmlstarlet attr poppler-utils xq libplist-utils qpdf
         sudo apt -s install tshark
         #sudo  apt install python3.12 python3.12-venv 
         #sudo snap install multipass-sshfs
@@ -242,47 +243,51 @@ write_files:
         /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cclgroupltd/ccl_chromium_reader.git
         /home/ubuntu/pyapps/bin/python3 -m pip install chardet
         /home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/0CM/BanditLab/raw/refs/heads/main/packages/edrparser-2.2.0.tar.gz
+        #/home/ubuntu/plaso/bin/python3 -m pip install plaso
         sudo chmod 755 /home/ubuntu/pyapps/bin/hindsight.py
         sudo chmod 755 /home/ubuntu/pyapps/bin/hindsight_gui.py
-        
+        wget --no-check-certificate https://raw.githubusercontent.com/ajread4/prefetcher/refs/heads/main/prefetcher.py -O /home/ubuntu/pyapps/bin/prefetcher.py && chmod 755  /home/ubuntu/pyapps/bin/prefetcher.py
+
         mkdir -p "$HOME"/{DATA,ewfmount,evidence,tools,tools/hayabusa,tools/memprocfs,tools/trufflehog,tools/noseyparker,tools/pup,tools/vt,tools/nuclei}
         
         ARCH=$(uname -m)
         if [ "$ARCH" = "aarch64" ]; then
             echo "Running deployment for aarch64 architecture"
-        #	sudo 'curl -skL https://github.com/0CM/BanditLab/raw/main/packages/BanditLabGetTools_aarch64.sh | bash'
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/EZTools_aarch64-20240710.tar.gz | tar -xz -C "$HOME"/tools/
+        wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/EZTools_aarch64-20240710.tar.gz | tar -xz -C "$HOME"/tools/
             wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/sidr_aarch64-20240702.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/ufrisk/MemProcFS/releases/download/v5.10/MemProcFS_files_and_binaries_v5.10.1-linux_aarch64-20240721.tar.gz | tar -xz -C "$HOME"/tools/memprocfs
-            wget --no-check-certificate -qO- https://github.com/Yamato-Security/hayabusa/releases/download/v2.16.0/hayabusa-2.16.0-linux-arm.zip | bsdtar -xvf- -C "$HOME"/tools/hayabusa
-            chmod 755 "$HOME"/tools/hayabusa/hayabusa-2.16.0-lin-aarch64-gnu
-            wget --no-check-certificate -qO- https://github.com/trufflesecurity/trufflehog/releases/download/v3.79.0/trufflehog_3.79.0_linux_arm64.tar.gz | tar -xz -C "$HOME"/tools/trufflehog
-            wget --no-check-certificate -qO- https://github.com/praetorian-inc/noseyparker/releases/download/v0.18.1/noseyparker-v0.18.1-aarch64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools/noseyparker
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/chainsaw_aarch64-20240713.tar.gz | tar -xz -C "$HOME"/tools/
+            wget --no-check-certificate -qO- https://github.com/ufrisk/MemProcFS/releases/download/v5.16/MemProcFS_files_and_binaries_v5.16.7-linux_aarch64-20251113.tar.gz | tar -xz -C "$HOME"/tools/memprocfs
+            wget --no-check-certificate -qO- https://github.com/Yamato-Security/hayabusa/releases/download/v3.7.0/hayabusa-3.7.0-lin-aarch64-gnu.zip | bsdtar -xvf- -C "$HOME"/tools/hayabusa
+            chmod 755 "$HOME"/tools/hayabusa/hayabusa-3.7.0-lin-aarch64-gnu
+            ln -s $HOME/tools/hayabusa/hayabusa-3.7.0-lin-aarch64-gnu $HOME/tools/hayabusa/hayabusa 
+            wget --no-check-certificate -qO- https://github.com/trufflesecurity/trufflehog/releases/download/v3.91.1/trufflehog_3.91.1_linux_arm64.tar.gz | tar -xz -C "$HOME"/tools/trufflehog
+            wget --no-check-certificate -qO- https://github.com/praetorian-inc/noseyparker/releases/download/v0.24.0/noseyparker-v0.24.0-aarch64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools/noseyparker
+            wget --no-check-certificate -qO- https://github.com/WithSecureLabs/chainsaw/releases/download/v2.13.1/chainsaw_aarch64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools
             wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/timeliner_aarch64-20240805.tar.gz | tar -xz -C "$HOME"/tools/
             wget --no-check-certificate -qO- https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_arm64.zip | bsdtar -xvf- -C "$HOME"/tools/pup && chmod 755 "$HOME"/tools/pup/pup && sudo ln -s "$HOME"/tools/pup/pup /usr/bin/pup
             wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/vt-cli_aarch64-20240720.tar.gz | tar -xz -C "$HOME"/tools/vt && chmod 755 "$HOME"/tools/vt/vt && sudo ln -s "$HOME"/tools/vt/vt /usr/bin/vt
-            wget --no-check-certificate -qO- https://github.com/projectdiscovery/nuclei/releases/download/v3.3.0/nuclei_3.3.0_linux_arm64.zip | bsdtar -xvf- -C "$HOME"/tools/nuclei && chmod 755 "$HOME"/tools/nuclei/nuclei && sudo ln -s "$HOME"/tools/nuclei/nuclei /usr/bin/nuclei
+            wget --no-check-certificate -qO- https://github.com/projectdiscovery/nuclei/releases/download/v3.5.1/nuclei_3.5.1_linux_arm64.zip | bsdtar -xvf- -C "$HOME"/tools/nuclei && chmod 755 "$HOME"/tools/nuclei/nuclei && sudo ln -s "$HOME"/tools/nuclei/nuclei /usr/bin/nuclei
             nuclei -update
-            wget --no-check-certificate https://raw.githubusercontent.com/ajread4/prefetcher/refs/heads/main/prefetcher.py -O /home/ubuntu/pyapps/bin/prefetcher.py && chmod 755  /home/ubuntu/pyapps/bin/prefetcher.py
+            echo  'alias installpwsh="sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/PowerShell/PowerShell/releases/download/v7.5.0/powershell-7.5.0-linux-arm64.tar.gz | tar -xz -C $HOME/tools/ --one-top-level=powershell && chmod 755 $HOME/tools/powershell/pwsh && sudo ln -s $HOME/tools/powershell/pwsh /usr/bin/pwsh'"' >> /home/ubuntu/.bashrc
         
         elif [ "$ARCH" = "x86_64" ]; then
             echo "Running deployment for x86_64 architecture"          
+            echo "Running deployment for x86_64 architecture"
             wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/EZTools_x86_64-20240725.tar.gz | tar -xz -C "$HOME"/tools/
             wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/sidr_x86_64-20240725.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/ufrisk/MemProcFS/releases/download/v5.10/MemProcFS_files_and_binaries_v5.10.1-linux_x64-20240721.tar.gz | tar -xz -C "$HOME"/tools/memprocfs
-            wget --no-check-certificate -qO- https://github.com/Yamato-Security/hayabusa/releases/download/v2.16.0/hayabusa-2.16.0-linux-intel.zip | bsdtar -xvf- -C "$HOME"/tools/hayabusa
-            chmod 755 "$HOME"/tools/hayabusa/hayabusa-2.16.0-lin-x64-musl
-            wget --no-check-certificate -qO- https://github.com/trufflesecurity/trufflehog/releases/download/v3.80.1/trufflehog_3.80.1_linux_amd64.tar.gz | tar -xz -C "$HOME"/tools/trufflehog
-            wget --no-check-certificate -qO- https://github.com/praetorian-inc/noseyparker/releases/download/v0.18.1/noseyparker-v0.18.1-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools/noseyparker
-            wget --no-check-certificate -qO- https://github.com/WithSecureLabs/chainsaw/releases/download/v2.9.2/chainsaw_x86_64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools/chainsaw
+            wget --no-check-certificate -qO- https://github.com/ufrisk/MemProcFS/releases/download/v5.16/MemProcFS_files_and_binaries_v5.16.7-linux_x64-20251113.tar.gz | tar -xz -C "$HOME"/tools/memprocfs
+            wget --no-check-certificate -qO- https://github.com/Yamato-Security/hayabusa/releases/download/v3.7.0/hayabusa-3.7.0-lin-x64-musl.zip | bsdtar -xvf- -C "$HOME"/tools/hayabusa
+            chmod 755 "$HOME"/tools/hayabusa/hayabusa-3.7.0-lin-x64-musl
+            ln -s $HOME/tools/hayabusa/hayabusa-3.7.0-lin-x64-musl $HOME/tools/hayabusa/hayabusa 
+            wget --no-check-certificate -qO- https://github.com/trufflesecurity/trufflehog/releases/download/v3.91.1/trufflehog_3.91.1_linux_amd64.tar.gz | tar -xz -C "$HOME"/tools/trufflehog
+            wget --no-check-certificate -qO- https://github.com/praetorian-inc/noseyparker/releases/download/v0.24.0/noseyparker-v0.24.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools/noseyparker
+            wget --no-check-certificate -qO- https://github.com/WithSecureLabs/chainsaw/releases/download/v2.13.1/chainsaw_x86_64-unknown-linux-gnu.tar.gz| tar -xz -C "$HOME"/tools
             wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/timeliner_x86_64-20240805.tar.gz | tar -xz -C "$HOME"/tools/
             wget --no-check-certificate -qO- https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip | bsdtar -xvf- -C "$HOME"/tools/pup && chmod 755 "$HOME"/tools/pup/pup && sudo ln -s "$HOME"/tools/pup/pup /usr/bin/pup
-            wget --no-check-certificate -qO- https://github.com/VirusTotal/vt-cli/releases/download/1.0.0/Linux64.zip | bsdtar -xvf- -C "$HOME"/tools/vt && chmod 755 "$HOME"/tools/vt/vt && sudo ln -s "$HOME"/tools/vt/vt /usr/bin/vt
-            wget --no-check-certificate -qO- https://github.com/projectdiscovery/nuclei/releases/download/v3.3.0/nuclei_3.3.0_linux_amd64.zip | bsdtar -xvf- -C "$HOME"/tools/nuclei && chmod 755 "$HOME"/tools/nuclei/nuclei && sudo ln -s "$HOME"/tools/nuclei/nuclei /usr/bin/nuclei
+            wget --no-check-certificate -qO- https://github.com/VirusTotal/vt-cli/releases/download/1.2.0/Linux64.zip| bsdtar -xvf- -C "$HOME"/tools/vt && chmod 755 "$HOME"/tools/vt/vt && sudo ln -s "$HOME"/tools/vt/vt /usr/bin/vt
+            wget --no-check-certificate -qO- https://github.com/projectdiscovery/nuclei/releases/download/v3.5.1/nuclei_3.5.1_linux_amd64.zip | bsdtar -xvf- -C "$HOME"/tools/nuclei && chmod 755 "$HOME"/tools/nuclei/nuclei && sudo ln -s "$HOME"/tools/nuclei/nuclei /usr/bin/nuclei
             nuclei -update
-            wget --no-check-certificate https://raw.githubusercontent.com/ajread4/prefetcher/refs/heads/main/prefetcher.py -O /home/ubuntu/pyapps/bin/prefetcher.py && chmod 755  /home/ubuntu/pyapps/bin/prefetcher.py
             wget --no-check-certificate https://raw.githubusercontent.com/ydkhatri/OneDrive/refs/heads/main/odl.py -O /home/ubuntu/pyapps/bin/odl.py && chmod 755  /home/ubuntu/pyapps/bin/odl.py
+            echo  'alias installpwsh="sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/PowerShell/PowerShell/releases/download/v7.5.4/powershell-7.5.4-linux-musl-x64.tar.gz | tar -xz -C $HOME/tools/ --one-top-level=powershell && chmod 755 $HOME/tools/powershell/pwsh && sudo ln -s $HOME/tools/powershell/pwsh /usr/bin/pwsh'"' >> /home/ubuntu/.bashrc
         fi
         
                 
