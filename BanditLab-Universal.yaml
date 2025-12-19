@@ -1,6 +1,5 @@
 #cloud-config
 #Description: BanditLab universal cloud-init config
-#Author: Jiri Holoska | NIS Threat Response
 #Version: v2025.11.13.3
 #Created: 2025-11-13
 #Target: Ubuntu 22.04 (jammy) and/or 24.04 (noble)
