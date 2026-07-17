@@ -45,6 +45,7 @@ apt:
         =zcgX
         -----END PGP PUBLIC KEY BLOCK-----
 
+write_files:
   - path: /etc/profile.d/banditlab-path.sh
     owner: root:root
     permissions: '0644'
