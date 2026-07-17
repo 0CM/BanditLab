@@ -1,11 +1,17 @@
 #cloud-config
 #Description: BanditLab universal cloud-init config
-#Version: v2025.11.13.3
+#Version: v2026.07.14.4
 #Created: 2025-11-13
-#Target: Ubuntu 22.04 (jammy) and/or 24.04 (noble)
+#Updated: 2026-07-14
+#Target: Ubuntu 24.04 (noble) — Multipass on macOS (aarch64 / x86_64)
+#Usage: multipass launch 24.04 --name banditlab --cpus 4 --memory 8G --disk 80G --cloud-init BanditLab-Universal.yaml
+#Post-deploy: starts automatically after cloud-init completes; monitor: tail -f ~/.lab/postdeploy.log
+
+package_update: true
 
 apt:
   sources:
+    # Required for EZTools (.NET forensic binaries) — dotnet-runtime-6.0 is not in default noble repos
     dotnet_backports:
       source: deb [arch="arm64","amd64"] https://ppa.launchpadcontent.net/dotnet/backports/ubuntu/ $RELEASE main
       key: |
@@ -38,321 +44,658 @@ apt:
         yRDdXGU=
         =zcgX
         -----END PGP PUBLIC KEY BLOCK-----
-    google-cloud-sdk:
-      source: deb [arch="arm64","amd64"] https://packages.cloud.google.com/apt cloud-sdk main
-      key: |
-        -----BEGIN PGP PUBLIC KEY BLOCK-----
 
-        mQENBGCRt7MBCADkYJHHQQoL6tKrW/LbmfR9ljz7ib2aWno4JO3VKQvLwjyUMPpq
-        /SXXMOnx8jXwgWizpPxQYDRJ0SQXS9ULJ1hXRL/OgMnZAYvYDeV2jBnKsAIEdiG/
-        e1qm8P4W9qpWJc+hNq7FOT13RzGWRx57SdLWSXo0KeY38r9lvjjOmT/cuOcmjwlD
-        T9XYf/RSO+yJ/AsyMdAr+ZbDeQUd9HYJiPdI04lGaGM02MjDMnx+monc+y54t+Z+
-        ry1WtQdzoQt9dHlIPlV1tR+xV5DHHsejCZxu9TWzzSlL5wfBBeEz7R/OIzivGJpW
-        QdJzd+2QDXSRg9q2XYWP5ZVtSgjVVJjNlb6ZABEBAAG0VEFydGlmYWN0IFJlZ2lz
-        dHJ5IFJlcG9zaXRvcnkgU2lnbmVyIDxhcnRpZmFjdC1yZWdpc3RyeS1yZXBvc2l0
-        b3J5LXNpZ25lckBnb29nbGUuY29tPokBTgQTAQoAOBYhBDW6oLM+nrOW9ZyoOMC6
-        XObcYxWjBQJgkbezAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEMC6XObc
-        YxWj+igIAMFh6DrAYMeq9sbZ1ZG6oAMrinUheGQbEqe76nIDQNsZnhDwZ2wWqgVC
-        7DgOMqlhQmOmzm7M6Nzmq2dvPwq3xC2OeI9fQyzjT72deBTzLP7PJok9PJFOMdLf
-        ILSsUnmMsheQt4DUO0jYAX2KUuWOIXXJaZ319QyoRNBPYa5qz7qXS7wHLOY89IDq
-        fHt6Aud8ER5zhyOyhytcYMeaGC1g1IKWmgewnhEq02FantMJGlmmFi2eA0EPD02G
-        C3742QGqRxLwjWsm5/TpyuU24EYKRGCRm7QdVIo3ugFSetKrn0byOxWGBvtu4fH8
-        XWvZkRT+u+yzH1s5yFYBqc2JTrrJvRWZAQ0EYoi11AEIANaYpM1kRhaBfLvcW8oV
-        jl9Guji0Y1rgF7hNlbfBmly30KPwSPKRTtL0Q+gncR0qnEWW0dG7tBsOLotZI0Dh
-        fHCe51CtgbGfHHpG7UoEcXEeEt9ay8VwYzCK3/OenG0i31TOoKbZhMRbk1SfNDit
-        dipVArYUsbjB5gnlsrCRj5mydEmnPF0cYnSkGKrCQxPxt9B0nKZQGjCf5J65DYcS
-        p+NUywhF7R3B4PY8dZ5aj19NezPVDlpuIZyTI5XKg33/8OBK8tShxRxmyta9g9o3
-        6jyVdM7cZgUY1WzHTr2vFquR4KM6mJA5atCbLBchJC51y6xKCaaB+xFlhbsUMHLk
-        xCsAEQEAAbRRUmFwdHVyZSBBdXRvbWF0aWMgU2lnbmluZyBLZXkgKGNsb3VkLXJh
-        cHR1cmUtc2lnbmluZy1rZXktMjAyMi0wMy0wNy0wOF8wMV8wMS5wdWIpiQEiBBMB
-        CAAWBQJiiLXUCRC1PcgNE+3vBQIbAwIZAQAAwagH/3xAE0gg3dDYPdpqGt+RvprF
-        3nnM7BHS2euK4lGg8eg26is6kK/1pYwy9AAI1aTGy8nEQXw5RvOFJiMBHnfhEOKC
-        NN62MraLbAovP+QmNlu4XhlczKcKbjR5WbVdmpTrdT1dHZHGZemnI2kypA70uvMY
-        Sc0m6HbeJxpljqejXZrHKbFyV7/5IKZ1rygMB9rSLIDaLKD95TTlu5m/ngwLpEHX
-        dC1L7y86soMavtFin9Vi9DNhab5yToO+VpVfpUHnUGQuXbdJCSfJkgkFU+by21Tr
-        kTKuuAbWMsscVcNSon9Gk0qr48LNaLK3i7LcB9crz1FzMu7e7GIPQJAjRPfW78i5
-        AQ0EYoi11AEIAMgwwl1FyDQ+G/v4KtnPfFETwVvPwA35gIuKBB4fQH2WKPGSMAWv
-        62EHQis67uu7A1j6a90/p0B7BS6v6kloiMR77izwkEQVvgHEl8EE+4RsZLFuLg48
-        Qm7BPndMwkwSzv6AjEIKbCKhOCBMGnonMOxP9x0F7JYK6wJDANamqhgKhRYkutRD
-        p06Ujuzqn6IhQ0hqa3IELBviLOzbsd0SlfyC872sR21xvvf30fI7egPiAeBy4WK5
-        lOm9Yd2f1ZjA8Yzqekk0btyu0udy1NHRw/0q61I83OnJJ4CeIfHwv15t0P2008JY
-        L4605wZGtwF4TOeRiHULiTN0/U5Gbm6meScAEQEAAYkBHwQYAQgAEwUCYoi11AkQ
-        tT3IDRPt7wUCGwwAAEmYCACFE+T90WPvVtT9RNeuQSRlnMT0nNSBqf+23JGtXpBs
-        VkAEHJ/iliMGP7IsrDfbzT/8la6sqjHa7MSrWF1c951EcgJG6HUWN3TSi1pD7AYX
-        eRjvjOVaK8Hpanq2cv1JNDWhVgFS/seFIegnmyEQvJ53HEfG6tSAUAP6lsVciIrx
-        ycAd9dMkxyuY+kL5hYQL8N6ojIRw0+TNGG1FK4RFdyrWf4om8xQAowP+17PC+6PM
-        FppJZqmZ2caa1GOMvsjFR4ZqZVY7AtBtSv7fgzDN14l1wvx9q/ksDxSTS6XJ5d3C
-        IArwUpCyLEj7Fm/PsdSzyWfilnAbD9Om871wyQeiC2DN
-        =gsYm
-        -----END PGP PUBLIC KEY BLOCK-----
-
-
-
-write_files:
-  - path: /etc/profile.d/99-postdeploy.sh
+  - path: /etc/profile.d/banditlab-path.sh
     owner: root:root
     permissions: '0644'
     content: |
-      # One-time post-deploy actions on first interactive login of user 'ubuntu'
-      # Guard: only interactive shells
-      case $- in *i* ) ;; * ) return ;; esac
-      # Guard: only the ubuntu user
-      [ "$USER" = "ubuntu" ] || return
+      # BanditLab tool PATH — interactive and non-interactive shells
+      export PATH="/home/ubuntu/bin:/home/ubuntu/pyapps/bin:/home/ubuntu/plaso/bin:${PATH}"
+
+  - path: /etc/profile.d/banditlab-aliases.sh
+    owner: root:root
+    permissions: '0644'
+    content: |
+      # Convenience aliases — invocation uses symlinks/PATH; 'tools' lists the catalog
+      alias tools='banditlab-tools'
+      alias pyapps='source /home/ubuntu/pyapps/bin/activate'
+
+  - path: /etc/systemd/system/banditlab-postdeploy.service
+    owner: root:root
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=BanditLab forensic tool deployment
+      After=network-online.target cloud-init.target
+      Wants=network-online.target
+      ConditionPathExists=!/home/ubuntu/.lab/.postdeploy.done
+
+      [Service]
+      Type=oneshot
+      User=ubuntu
+      Group=ubuntu
+      Environment=HOME=/home/ubuntu
+      ExecStart=/home/ubuntu/.lab/run-postdeploy.sh
+      RemainAfterExit=yes
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /home/ubuntu/.lab/start-postdeploy-after-cloudinit.sh
+    owner: root:root
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      # Waits for cloud-init (including deferred write_files) then starts post-deploy.
+      LOG=/var/log/banditlab-trigger.log
+      echo "[trigger] $(date -Is) waiting for cloud-init to finish" >> "$LOG"
+      cloud-init status --wait >> "$LOG" 2>&1 || true
+
+      for i in $(seq 1 60); do
+        if [ -x /home/ubuntu/.lab/fortoolsinit.sh ] && [ -f /home/ubuntu/.lab/plasoinit.in ]; then
+          echo "[trigger] $(date -Is) deploy scripts ready" >> "$LOG"
+          break
+        fi
+        echo "[trigger] $(date -Is) waiting for deploy scripts ($i/60)" >> "$LOG"
+        sleep 2
+      done
+
+      echo "[trigger] $(date -Is) starting banditlab-postdeploy.service" >> "$LOG"
+      systemctl start banditlab-postdeploy.service >> "$LOG" 2>&1
+
+  - path: /etc/cron.d/banditlab-postdeploy
+    owner: root:root
+    permissions: '0644'
+    content: |
+      # Fallback if cloud-init trigger missed first boot
+      @reboot root sleep 180 && [ ! -f /home/ubuntu/.lab/.postdeploy.done ] && /usr/bin/systemctl start banditlab-postdeploy.service
+
+  - path: /home/ubuntu/.lab/run-postdeploy.sh
+    owner: ubuntu:ubuntu
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
 
       SENTINEL="/home/ubuntu/.lab/.postdeploy.done"
       LOG="/home/ubuntu/.lab/postdeploy.log"
       LOCK="/home/ubuntu/.lab/.postdeploy.lock"
 
-      # If already completed, do nothing
-      [ -f "$SENTINEL" ] && return
+      [ -f "$SENTINEL" ] && exit 0
 
-      # Ensure workspace exists and log is owned by ubuntu
       mkdir -p /home/ubuntu/.lab
-      : > "$LOG"
-      chown ubuntu:ubuntu "$LOG"
-
-      # Serialize to avoid duplicate runs if multiple sessions log in at once
       exec 9>"$LOCK"
       if ! flock -n 9; then
-        # Another session is running postdeploy
-        return
+        echo "[postdeploy] Another instance is running." | tee -a "$LOG"
+        exit 0
+      fi
+
+      for i in $(seq 1 30); do
+        if [ -x /home/ubuntu/.lab/fortoolsinit.sh ] && [ -f /home/ubuntu/.lab/plasoinit.in ]; then
+          break
+        fi
+        echo "[postdeploy] Waiting for deploy scripts ($i/30)..." | tee -a "$LOG"
+        sleep 2
+      done
+
+      if [ ! -x /home/ubuntu/.lab/fortoolsinit.sh ]; then
+        echo "[postdeploy] ERROR: fortoolsinit.sh not found. Cloud-init may be incomplete." | tee -a "$LOG"
+        exit 1
       fi
 
       echo "[postdeploy] Starting at $(date -Is)" | tee -a "$LOG"
 
-      # Run in a subshell so shell options don't leak into the user's session
-      (
-        set -e
-
-        # 1) Run your init script
-        bash /home/ubuntu/.lab/fortoolsinit.sh | tee -a "$LOG"
-
-        # 2) Install plaso requirements using your venv python
-        /home/ubuntu/plaso/bin/python3 -m pip install -r /home/ubuntu/.lab/plasoinit.in | tee -a "$LOG"
-      )
-      status=$?
-
-      if [ $status -eq 0 ]; then
-        echo "[postdeploy] Finished OK at $(date -Is)" | tee -a "$LOG"
+      if bash /home/ubuntu/.lab/fortoolsinit.sh 2>&1 | tee -a "$LOG" \
+        && /home/ubuntu/plaso/bin/python3 -m pip install -r /home/ubuntu/.lab/plasoinit.in 2>&1 | tee -a "$LOG"; then
+        bash /home/ubuntu/.lab/generate-tools-manifest.sh
         touch "$SENTINEL"
-        chown ubuntu:ubuntu "$SENTINEL"
-      else
-        echo "[postdeploy] Failed with code $status at $(date -Is). Will retry on next login." | tee -a "$LOG"
-        # Do not create the sentinel so it runs again next time
+        echo "[postdeploy] Finished OK at $(date -Is)" | tee -a "$LOG"
+        exit 0
       fi
 
-      # Do not remove this file; the sentinel ensures it runs only once on success
+      echo "[postdeploy] Failed at $(date -Is). Will retry on next boot or login." | tee -a "$LOG"
+      exit 1
     defer: true
-        
+
+  - path: /home/ubuntu/.lab/generate-tools-manifest.sh
+    owner: ubuntu:ubuntu
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      HOME="${HOME:-/home/ubuntu}"
+      MANIFEST="${HOME}/.lab/tools.manifest"
+      TMP="$(mktemp)"
+
+      add() {
+        printf '%s|%s|%s\n' "$1" "$2" "$3" >> "$TMP"
+      }
+
+      for name in mftecmd amcacheparser bstrings evtxecmd jlecmd lecmd rbcmd recmd \
+        srumecmd recentfilecacheparser sqlecmd wxtcmd rla; do
+        add eztools "$name" "Eric Zimmerman EZTool"
+      done
+
+      for name in hayabusa nuclei chainsaw trufflehog noseyparker vt pup sidr timeliner; do
+        add binary "$name" "Standalone forensic binary"
+      done
+
+      for name in edrparser hindsight hindsight_gui pdfid olevba peepdf fat_parser \
+        ntfs_parser browserexport parse_smsdb prefetcher xlsxgrep auto-archiver ioc-scan odl; do
+        add python "$name" "Python tool (pyapps venv)"
+      done
+
+      for name in log2timeline pinfo psteal psort; do
+        add plaso "$name" "Plaso forensic suite"
+      done
+
+      for name in sleuthkit tshark yara exiftool testdisk dc3dd dnsrecon nikto; do
+        add apt "$name" "System package (apt)"
+      done
+
+      add optional install-pwsh "Install PowerShell on demand"
+      add optional install-azurecli "Install Azure CLI on demand"
+      add optional install-gcloud "Install Google Cloud CLI via snap on demand"
+
+      sort -t'|' -k1,1 -k2,2 "$TMP" > "$MANIFEST"
+      rm -f "$TMP"
+      echo "[manifest] Wrote $(wc -l < "$MANIFEST") tools to ${MANIFEST}"
+    defer: true
+
+  - path: /home/ubuntu/bin/banditlab-tools
+    owner: ubuntu:ubuntu
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      HOME="${HOME:-/home/ubuntu}"
+      MANIFEST="${HOME}/.lab/tools.manifest"
+
+      usage() {
+        cat <<'EOF'
+      Usage: banditlab-tools [category]
+
+      List installed BanditLab forensic tools by category.
+        banditlab-tools           Show categories and counts
+        banditlab-tools eztools   List Eric Zimmerman EZTools
+        banditlab-tools python    List pyapps Python tools
+        banditlab-tools plaso     List Plaso tools
+        banditlab-tools binary    List standalone binaries
+        banditlab-tools apt       List key apt packages
+        banditlab-tools optional  List on-demand installers
+
+      Shortcut: alias tools='banditlab-tools'
+      EOF
+      }
+
+      case "${1:-}" in
+        -h|--help) usage; exit 0 ;;
+      esac
+
+      if [ ! -f "$MANIFEST" ]; then
+        if [ -f "${HOME}/.lab/.postdeploy.done" ]; then
+          echo "Manifest missing. Regenerating..."
+          bash "${HOME}/.lab/generate-tools-manifest.sh"
+        else
+          echo "BanditLab deploy in progress or not started."
+          echo "  tail -f ~/.lab/postdeploy.log"
+          echo "  sudo tail -f /var/log/banditlab-trigger.log"
+          exit 1
+        fi
+      fi
+
+      if [ -n "${1:-}" ]; then
+        printf "%-22s %s\n" "NAME" "DESCRIPTION"
+        printf "%-22s %s\n" "----" "-----------"
+        awk -F'|' -v cat="${1}" '$1 == cat { printf "%-22s %s\n", $2, $3 }' "$MANIFEST"
+        exit 0
+      fi
+
+      echo "BanditLab tool catalog"
+      echo "Run: banditlab-tools <category>"
+      echo ""
+      awk -F'|' '
+        { cats[$1]++ }
+        END {
+          for (c in cats) printf "  %-12s (%d tools)\n", c, cats[c]
+        }' "$MANIFEST" | sort
+      echo ""
+      echo "Examples: banditlab-tools eztools | banditlab-tools python"
+    defer: true
+
+  - path: /etc/update-motd.d/99-banditlab
+    owner: root:root
+    permissions: '0755'
+    content: |
+      #!/bin/sh
+      SENTINEL="/home/ubuntu/.lab/.postdeploy.done"
+      MANIFEST="/home/ubuntu/.lab/tools.manifest"
+      LOG="/home/ubuntu/.lab/postdeploy.log"
+
+      if [ -f "$SENTINEL" ] && [ -f "$MANIFEST" ]; then
+        COUNT="$(wc -l < "$MANIFEST" | tr -d ' ')"
+        printf "\n  BanditLab: ready (%s tools) — run: banditlab-tools\n\n" "$COUNT"
+      elif pgrep -f "run-postdeploy.sh|fortoolsinit.sh" >/dev/null 2>&1; then
+        printf "\n  BanditLab: deploying tools...  tail -f ~/.lab/postdeploy.log\n\n"
+      elif [ -f "$LOG" ]; then
+        printf "\n  BanditLab: deploy incomplete — tail -f ~/.lab/postdeploy.log\n\n"
+      else
+        printf "\n  BanditLab: starting deploy shortly...\n\n"
+      fi
+
+  - path: /etc/profile.d/99-postdeploy.sh
+    owner: root:root
+    permissions: '0644'
+    content: |
+      # Fallback: retry post-deploy on interactive login if auto-trigger failed
+      case $- in *i* ) ;; * ) return ;; esac
+      [ "$USER" = "ubuntu" ] || return
+      [ -f /home/ubuntu/.lab/.postdeploy.done ] && return
+      nohup /home/ubuntu/.lab/run-postdeploy.sh >> /home/ubuntu/.lab/postdeploy.log 2>&1 &
+    defer: true
+
   - path: /home/ubuntu/.lab/plasoinit.in
     owner: ubuntu:ubuntu
     permissions: '0644'
     content: |
-        acstore==20240407
-        artifacts==20240518
-        bencode.py==4.0.0
-        certifi==2025.1.31
-        cffi==1.17.1
-        charset-normalizer==3.4.1
-        defusedxml==0.7.1
-        dfdatetime==20251018
-        dfvfs==20240505
-        dfwinreg==20240229
-        dtfabric==20230520
-        Events==0.5
-        Flor==1.1.3
-        idna==3.10
-        libbde-python==20240502
-        libcaes-python==20240413
-        libcreg-python==20240419
-        libesedb-python==20240420
-        libevt-python==20240421
-        libevtx-python==20240504
-        libewf-python==20240506
-        libfcrypto-python==20240414
-        libfsapfs-python==20240429
-        libfsext-python==20240501
-        libfsfat-python==20240501
-        libfshfs-python==20240501
-        libfsntfs-python==20240501
-        libfsxfs-python==20240501
-        libfvde-python==20240502
-        libfwnt-python==20240415
-        libfwsi-python==20240423
-        liblnk-python==20240423
-        libluksde-python==20240503
-        libmodi-python==20240507
-        libmsiecf-python==20240425
-        libolecf-python==20240427
-        libphdi-python==20240508
-        libqcow-python==20240308
-        libregf-python==20240421
-        libscca-python==20240427
-        libsigscan-python==20240505
-        libsmdev-python==20240505
-        libsmraw-python==20240506
-        libvhdi-python==20240509
-        libvmdk-python==20240510
-        libvsapm-python==20240503
-        libvsgpt-python==20240504
-        libvshadow-python==20240504
-        libvslvm-python==20240504
-        lz4==4.4.3
-        opensearch-py==2.8.0
-        pefile==2024.8.26
-        plaso==20240826
-        psutil==7.0.0
-        pycparser==2.22
-        pyparsing==3.1.4
-        python-dateutil==2.9.0.post0
-        pytsk3==20250312
-        pytz==2025.2
-        PyYAML==6.0.2
-        pyzmq==26.3.0
-        redis==5.2.1
-        requests==2.32.3
-        six==1.17.0
-        urllib3==2.3.0
-        xattr==1.1.4
-        XlsxWriter==3.2.2
-        yara-python==4.5.1
-        zstd==1.5.6.6
+      acstore==20240407
+      artifacts==20240518
+      bencode.py==4.0.0
+      certifi==2025.1.31
+      cffi==1.17.1
+      charset-normalizer==3.4.1
+      defusedxml==0.7.1
+      dfdatetime==20251018
+      dfvfs==20240505
+      dfwinreg==20240229
+      dtfabric
+      Events==0.5
+      Flor==1.1.3
+      idna==3.10
+      libbde-python==20240502
+      libcaes-python==20240413
+      libcreg-python==20240419
+      libesedb-python==20240420
+      libevt-python==20240421
+      libevtx-python==20240504
+      libewf-python==20240506
+      libfcrypto-python==20240414
+      libfsapfs-python==20240429
+      libfsext-python==20240501
+      libfsfat-python==20240501
+      libfshfs-python==20240501
+      libfsntfs-python==20240501
+      libfsxfs-python==20240501
+      libfvde-python==20240502
+      libfwnt-python==20240415
+      libfwsi-python==20240423
+      liblnk-python==20240423
+      libluksde-python==20240503
+      libmodi-python==20240507
+      libmsiecf-python==20240425
+      libolecf-python==20240427
+      libphdi-python==20240508
+      libqcow-python==20240308
+      libregf-python==20240421
+      libscca-python==20240427
+      libsigscan-python==20240505
+      libsmdev-python==20240505
+      libsmraw-python==20240506
+      libvhdi-python==20240509
+      libvmdk-python==20240510
+      libvsapm-python==20240503
+      libvsgpt-python==20240504
+      libvshadow-python==20240504
+      libvslvm-python==20240504
+      lz4==4.4.3
+      opensearch-py==2.8.0
+      pefile==2024.8.26
+      plaso==20240826
+      psutil==7.0.0
+      pycparser==2.22
+      pyparsing==3.1.4
+      python-dateutil==2.9.0.post0
+      pytsk3==20250312
+      pytz==2025.2
+      PyYAML==6.0.2
+      pyzmq==26.3.0
+      redis==5.2.1
+      requests==2.32.3
+      six==1.17.0
+      urllib3==2.3.0
+      xattr==1.1.4
+      XlsxWriter==3.2.2
+      yara-python==4.5.1
+      zstd==1.5.6.6
     defer: true
-    
+
+  - path: /home/ubuntu/bin/install-pwsh
+    owner: ubuntu:ubuntu
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      ARCH="$(uname -m)"
+      case "${ARCH}" in
+        aarch64)
+          PWSH_URL="https://github.com/PowerShell/PowerShell/releases/download/v7.5.0/powershell-7.5.0-linux-arm64.tar.gz"
+          ;;
+        x86_64)
+          PWSH_URL="https://github.com/PowerShell/PowerShell/releases/download/v7.5.4/powershell-7.5.4-linux-musl-x64.tar.gz"
+          ;;
+        *)
+          echo "install-pwsh: unsupported architecture: ${ARCH}" >&2
+          exit 1
+          ;;
+      esac
+      wget --no-check-certificate -qO- "${PWSH_URL}" \
+        | tar -xz -C "${HOME}/tools/" --one-top-level=powershell
+      chmod 755 "${HOME}/tools/powershell/pwsh"
+      sudo ln -sf "${HOME}/tools/powershell/pwsh" /usr/local/bin/pwsh
+      echo "PowerShell installed: $(pwsh --version)"
+    defer: true
+
+  - path: /home/ubuntu/bin/install-azurecli
+    owner: ubuntu:ubuntu
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+    defer: true
+
+  - path: /home/ubuntu/bin/install-gcloud
+    owner: ubuntu:ubuntu
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      sudo snap install google-cloud-cli --classic
+    defer: true
+
   - path: /home/ubuntu/.lab/fortoolsinit.sh
     owner: ubuntu:ubuntu
-    permissions: '0644'
+    permissions: '0755'
     content: |
-        echo '#######################################'
-        echo '# BanditLab tool deployement script   #'
-        echo '#######################################'
-        
-        
-        sudo apt install -y afflib-tools attr cewl dc3dd dislocker dnsrecon ewf-tools exifprobe fcrackzip forensic-artifacts forensics-colorize galleta hashdeep pff-tools mc recoverdm scrounge-ntfs sleuthkit ssdeep wipe yara ext3grep libimage-exiftool-perl testdisk geoip-bin mblaze mboxgrep pev unar tesseract-ocr libvshadow-utils dotnet-runtime-6.0 python3.12 python3.12-venv python3-pip extundelete libarchive-tools ugrep apt-transport-https parallel nikto jq xmlstarlet attr poppler-utils xq libplist-utils qpdf
-        sudo apt -s install tshark
-        #sudo  apt install python3.12 python3.12-venv 
-        #sudo snap install multipass-sshfs
-        
-        
-        
-        /home/ubuntu/pyapps/bin/python3 -m pip install wheel construct pdfid oletools pyhindsight auto-archiver xlsxgrep tabulate dnspython domaintools_api evtxtract parse_smsdb pycryptodome
-        #/home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/msuhanov/dfir_ntfs/archive/refs/tags/1.1.20.tar.gz
-        source /home/ubuntu/pyapps/bin/activate&&pip install https://github.com/msuhanov/dfir_ntfs/archive/refs/tags/1.1.20.tar.gz
-        /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cisagov/ioc-scanner.git
-        /home/ubuntu/pyapps/bin/python3 -m pip install git+https://github.com/cclgroupltd/ccl_chromium_reader.git
-        /home/ubuntu/pyapps/bin/python3 -m pip install chardet
-        /home/ubuntu/pyapps/bin/python3 -m pip install https://github.com/0CM/BanditLab/raw/refs/heads/main/packages/edrparser-2.2.0.tar.gz
-        #/home/ubuntu/plaso/bin/python3 -m pip install plaso
-        sudo chmod 755 /home/ubuntu/pyapps/bin/hindsight.py
-        sudo chmod 755 /home/ubuntu/pyapps/bin/hindsight_gui.py
-        wget --no-check-certificate https://raw.githubusercontent.com/ajread4/prefetcher/refs/heads/main/prefetcher.py -O /home/ubuntu/pyapps/bin/prefetcher.py && chmod 755  /home/ubuntu/pyapps/bin/prefetcher.py
-
-        mkdir -p "$HOME"/{DATA,ewfmount,evidence,tools,tools/hayabusa,tools/memprocfs,tools/trufflehog,tools/noseyparker,tools/pup,tools/vt,tools/nuclei}
-        
-        ARCH=$(uname -m)
-        if [ "$ARCH" = "aarch64" ]; then
-            echo "Running deployment for aarch64 architecture"
-        wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/EZTools_aarch64-20240710.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/sidr_aarch64-20240702.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/ufrisk/MemProcFS/releases/download/v5.16/MemProcFS_files_and_binaries_v5.16.7-linux_aarch64-20251113.tar.gz | tar -xz -C "$HOME"/tools/memprocfs
-            wget --no-check-certificate -qO- https://github.com/Yamato-Security/hayabusa/releases/download/v3.7.0/hayabusa-3.7.0-lin-aarch64-gnu.zip | bsdtar -xvf- -C "$HOME"/tools/hayabusa
-            chmod 755 "$HOME"/tools/hayabusa/hayabusa-3.7.0-lin-aarch64-gnu
-            ln -s $HOME/tools/hayabusa/hayabusa-3.7.0-lin-aarch64-gnu $HOME/tools/hayabusa/hayabusa 
-            wget --no-check-certificate -qO- https://github.com/trufflesecurity/trufflehog/releases/download/v3.91.1/trufflehog_3.91.1_linux_arm64.tar.gz | tar -xz -C "$HOME"/tools/trufflehog
-            wget --no-check-certificate -qO- https://github.com/praetorian-inc/noseyparker/releases/download/v0.24.0/noseyparker-v0.24.0-aarch64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools/noseyparker
-            wget --no-check-certificate -qO- https://github.com/WithSecureLabs/chainsaw/releases/download/v2.13.1/chainsaw_aarch64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/timeliner_aarch64-20240805.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_arm64.zip | bsdtar -xvf- -C "$HOME"/tools/pup && chmod 755 "$HOME"/tools/pup/pup && sudo ln -s "$HOME"/tools/pup/pup /usr/bin/pup
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/vt-cli_aarch64-20240720.tar.gz | tar -xz -C "$HOME"/tools/vt && chmod 755 "$HOME"/tools/vt/vt && sudo ln -s "$HOME"/tools/vt/vt /usr/bin/vt
-            wget --no-check-certificate -qO- https://github.com/projectdiscovery/nuclei/releases/download/v3.5.1/nuclei_3.5.1_linux_arm64.zip | bsdtar -xvf- -C "$HOME"/tools/nuclei && chmod 755 "$HOME"/tools/nuclei/nuclei && sudo ln -s "$HOME"/tools/nuclei/nuclei /usr/bin/nuclei
-            nuclei -update
-            echo  'alias installpwsh="sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/PowerShell/PowerShell/releases/download/v7.5.0/powershell-7.5.0-linux-arm64.tar.gz | tar -xz -C $HOME/tools/ --one-top-level=powershell && chmod 755 $HOME/tools/powershell/pwsh && sudo ln -s $HOME/tools/powershell/pwsh /usr/bin/pwsh'"' >> /home/ubuntu/.bashrc
-        
-        elif [ "$ARCH" = "x86_64" ]; then
-            echo "Running deployment for x86_64 architecture"          
-            echo "Running deployment for x86_64 architecture"
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/EZTools_x86_64-20240725.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/sidr_x86_64-20240725.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/ufrisk/MemProcFS/releases/download/v5.16/MemProcFS_files_and_binaries_v5.16.7-linux_x64-20251113.tar.gz | tar -xz -C "$HOME"/tools/memprocfs
-            wget --no-check-certificate -qO- https://github.com/Yamato-Security/hayabusa/releases/download/v3.7.0/hayabusa-3.7.0-lin-x64-musl.zip | bsdtar -xvf- -C "$HOME"/tools/hayabusa
-            chmod 755 "$HOME"/tools/hayabusa/hayabusa-3.7.0-lin-x64-musl
-            ln -s $HOME/tools/hayabusa/hayabusa-3.7.0-lin-x64-musl $HOME/tools/hayabusa/hayabusa 
-            wget --no-check-certificate -qO- https://github.com/trufflesecurity/trufflehog/releases/download/v3.91.1/trufflehog_3.91.1_linux_amd64.tar.gz | tar -xz -C "$HOME"/tools/trufflehog
-            wget --no-check-certificate -qO- https://github.com/praetorian-inc/noseyparker/releases/download/v0.24.0/noseyparker-v0.24.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME"/tools/noseyparker
-            wget --no-check-certificate -qO- https://github.com/WithSecureLabs/chainsaw/releases/download/v2.13.1/chainsaw_x86_64-unknown-linux-gnu.tar.gz| tar -xz -C "$HOME"/tools
-            wget --no-check-certificate -qO- https://github.com/0CM/BanditLab/raw/main/packages/timeliner_x86_64-20240805.tar.gz | tar -xz -C "$HOME"/tools/
-            wget --no-check-certificate -qO- https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip | bsdtar -xvf- -C "$HOME"/tools/pup && chmod 755 "$HOME"/tools/pup/pup && sudo ln -s "$HOME"/tools/pup/pup /usr/bin/pup
-            wget --no-check-certificate -qO- https://github.com/VirusTotal/vt-cli/releases/download/1.2.0/Linux64.zip| bsdtar -xvf- -C "$HOME"/tools/vt && chmod 755 "$HOME"/tools/vt/vt && sudo ln -s "$HOME"/tools/vt/vt /usr/bin/vt
-            wget --no-check-certificate -qO- https://github.com/projectdiscovery/nuclei/releases/download/v3.5.1/nuclei_3.5.1_linux_amd64.zip | bsdtar -xvf- -C "$HOME"/tools/nuclei && chmod 755 "$HOME"/tools/nuclei/nuclei && sudo ln -s "$HOME"/tools/nuclei/nuclei /usr/bin/nuclei
-            nuclei -update
-            wget --no-check-certificate https://raw.githubusercontent.com/ydkhatri/OneDrive/refs/heads/main/odl.py -O /home/ubuntu/pyapps/bin/odl.py && chmod 755  /home/ubuntu/pyapps/bin/odl.py
-            echo  'alias installpwsh="sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/PowerShell/PowerShell/releases/download/v7.5.4/powershell-7.5.4-linux-musl-x64.tar.gz | tar -xz -C $HOME/tools/ --one-top-level=powershell && chmod 755 $HOME/tools/powershell/pwsh && sudo ln -s $HOME/tools/powershell/pwsh /usr/bin/pwsh'"' >> /home/ubuntu/.bashrc
-        fi
-        
-                
-        mkdir $HOME/tools/EZTools/RECmd/BatchExamples 
-        wget https://raw.githubusercontent.com/EricZimmerman/RECmd/refs/heads/master/BatchExamples/Kroll_Batch.reb -O $HOME/tools/EZTools/RECmd/BatchExamples/Kroll_Batch.reb --no-check-certificate 
-        wget https://raw.githubusercontent.com/EricZimmerman/RECmd/refs/heads/master/BatchExamples/UserActivity.reb -O $HOME/tools/EZTools/RECmd/BatchExamples/UserActivity.reb --no-check-certificate 
-        ln -s $HOME/tools/hayabusa/hayabusa-2.16.0-lin-aarch64-gnu $HOME/tools/hayabusa/hayabusa 
-        sudo -u ubuntu sh -c 'rm -rf $HOME/tools/chainsaw/sigma/&&git clone https://github.com/SigmaHQ/sigma $HOME/tools/chainsaw/sigma/'
-        sudo -u ubuntu sh -c 'git clone https://github.com/WithSecureLabs/chainsaw.git && mv chainsaw/mappings chainsaw/rules "$HOME/tools/chainsaw/" && rm -rf chainsaw'
-        sudo -u ubuntu sh -c 'git clone https://github.com/CISOfy/lynis $HOME/tools/lynis'
-        sudo -u ubuntu sh -c 'nuclei -update'
-        sudo -u ubuntu sh -c '$HOME/tools/hayabusa/hayabusa-2.16.0-lin-aarch64-gnu update-rules'
-        
-        # Aliases and other customization for Binary Bandits Forensic VM
-        echo 'alias edrparser="source $HOME/pyapps/bin/activate&&edrparser"' >> /home/ubuntu/.bashrc
-        echo 'alias log2timeline="source $HOME/plaso/bin/activate&&log2timeline"' >> /home/ubuntu/.bashrc
-        echo 'alias pinfo="source $HOME/plaso/bin/activate&&pinfo"' >> /home/ubuntu/.bashrc
-        echo 'alias psteal="source $HOME/plaso/bin/activate&&psteal"' >> /home/ubuntu/.bashrc 
-        echo 'alias psort="source $HOME/plaso/bin/activate&&psort"' >> /home/ubuntu/.bashrc
-        echo  'alias mftecmd="/home/ubuntu/tools/EZTools/MFTECmd/MFTECmd"' >> /home/ubuntu/.bashrc
-        echo  'alias amcacheparser="/home/ubuntu/tools/EZTools/AmcacheParser/AmcacheParser"' >> /home/ubuntu/.bashrc
-        echo  'alias bstrings="/home/ubuntu/tools/EZTools/bstrings/bstrings"' >> /home/ubuntu/.bashrc
-        echo  'alias evtxecmd="/home/ubuntu/tools/EZTools/EvtxECmd/EvtxECmd"' >> /home/ubuntu/.bashrc
-        echo  'alias jlecmd="/home/ubuntu/tools/EZTools/JLECmd/JLECmd"' >> /home/ubuntu/.bashrc
-        echo  'alias lecmd="/home/ubuntu/tools/EZTools/LECmd/LECmd"' >> /home/ubuntu/.bashrc
-        echo  'alias rbcmd="/home/ubuntu/tools/EZTools/RBCmd/RBCmd"' >> /home/ubuntu/.bashrc
-        echo  'alias recmd="/home/ubuntu/tools/EZTools/RECmd/RECmd"' >> /home/ubuntu/.bashrc
-        echo  'alias srumecmd="/home/ubuntu/tools/EZTools/SrumECmd/SrumECmd"' >> /home/ubuntu/.bashrc
-        echo  'alias recentfilecacheparser="/home/ubuntu/tools/EZTools/RecentFileCacheParser/RecentFileCacheParser"' >> /home/ubuntu/.bashrc
-        echo  'alias sqlecmd="/home/ubuntu/tools/EZTools/SQLECmd/SQLECmd"' >> /home/ubuntu/.bashrc
-        echo  'alias wxtcmd="/home/ubuntu/tools/EZTools/WxTCmd/WxTCmd"' >> /home/ubuntu/.bashrc
-        echo  'alias rla="/home/ubuntu/tools/EZTools/rla/rla"' >> /home/ubuntu/.bashrc
-        echo  'alias sidr="/home/ubuntu/tools/sidr/sidr"' >> /home/ubuntu/.bashrc
-        echo  'alias vt="/home/ubuntu/tools/vt/vt"' >> /home/ubuntu/.bashrc
-        echo  'alias noseyparker="/home/ubuntu/tools/noseyparker/bin/noseyparker"' >> /home/ubuntu/.bashrc
-        echo  'alias trufflehog="/home/ubuntu/tools/trufflehog/trufflehog"' >> /home/ubuntu/.bashrc
-        echo  'alias timeliner="/home/ubuntu/tools/timeliner/timeliner"' >> /home/ubuntu/.bashrc
-        echo  'alias pyapps="source $HOME/pyapps/bin/activate"' >> /home/ubuntu/.bashrc
-        echo  'alias peepdf="source $HOME/pyapps/bin/activate&&peepdf"' >> /home/ubuntu/.bashrc
-        echo  'alias pdfid="source $HOME/pyapps/bin/activate&&pdfid"' >> /home/ubuntu/.bashrc
-        echo  'alias fat_parser="source $HOME/pyapps/bin/activate&&fat_parser"' >> /home/ubuntu/.bashrc
-        echo  'alias ntfs_parser="source $HOME/pyapps/bin/activate&&ntfs_parser"' >> /home/ubuntu/.bashrc
-        echo  'alias hindsight="source $HOME/pyapps/bin/activate&&hindsight.py"' >> /home/ubuntu/.bashrc
-        echo  'alias hindsight_gui="source $HOME/pyapps/bin/activate&&hindsight_gui.py"' >> /home/ubuntu/.bashrc
-        echo  'alias browserexport="source $HOME/pyapps/bin/activate&&browserexport"' >> /home/ubuntu/.bashrc
-        echo  'alias parse_smsdb="source $HOME/pyapps/bin/activate&&parse_smsdb"' >> /home/ubuntu/.bashrc
-        echo  'alias olevba="source $HOME/pyapps/bin/activate&&olevba"' >> /home/ubuntu/.bashrc
-        echo  'alias prefetch="source $HOME/pyapps/bin/activate&&prefetcher.py"' >> /home/ubuntu/.bashrc
-        echo  'alias prefetcher="source $HOME/pyapps/bin/activate&&prefetcher.py"'  >> /home/ubuntu/.bashrc
-        echo  'alias auto-archiver="source $HOME/pyapps/bin/activate&&auto-archiver"' >> /home/ubuntu/.bashrc
-        echo  'alias xlsxgrep="source $HOME/pyapps/bin/activate&&xlsxgrep"' >> /home/ubuntu/.bashrc
-        echo  'alias ioc-scan="source $HOME/pyapps/bin/activate&&ioc-scan"' >> /home/ubuntu/.bashrc
-        echo  'alias odl="source $HOME/pyapps/bin/activate&&odl.py"' >> /home/ubuntu/.bashrc
-        echo  'alias installazurecli="curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash"' >> /home/ubuntu/.bashrc
-        echo  'alias installgcloudcli="sudo snap install google-cloud-cli --classic"' >> /home/ubuntu/.bashrc
-        echo  'alias installgcloudsdk="sudo snap install google-cloud-sdk --classic"' >> /home/ubuntu/.bashrc
-        echo  'alias chainsaw="/home/ubuntu/tools/chainsaw/chainsaw"' >> /home/ubuntu/.bashrc
-        echo  'alias installpwsh="sudo -u ubuntu sh -c 'wget --no-check-certificate -qO- https://github.com/PowerShell/PowerShell/releases/download/v7.5.0/powershell-7.5.0-linux-arm64.tar.gz | tar -xz -C $HOME/tools/ --one-top-level=powershell && chmod 755 $HOME/tools/powershell/pwsh && sudo ln -s $HOME/tools/powershell/pwsh /usr/bin/pwsh'"' >> /home/ubuntu/.bashrc
-    defer: true
+      #!/usr/bin/env bash
+      [ -z "${BASH_VERSION:-}" ] && exec /usr/bin/env bash "$0" "$@"
+      set -uo pipefail
+      export DEBIAN_FRONTEND=noninteractive
       
+      echo '#######################################'
+      echo '# BanditLab tool deployment script    #'
+      echo '#######################################'
+      
+      HOME="${HOME:-/home/ubuntu}"
+      PYAPPS="${HOME}/pyapps/bin/python3"
+      TOOLS="${HOME}/tools"
+      BIN="${HOME}/bin"
+      FAIL_LOG="${HOME}/.lab/fortoolsinit.failures"
+      
+      OK=()
+      FAILED=()
+      
+      step() {
+        local name="$1"
+        shift
+        echo "[fortoolsinit] >>> ${name}"
+        if "$@"; then
+          echo "[fortoolsinit] OK: ${name}"
+          OK+=("${name}")
+          return 0
+        fi
+        echo "[fortoolsinit] FAIL: ${name}" >&2
+        FAILED+=("${name}")
+        echo "$(date -Is) FAIL: ${name}" >> "${FAIL_LOG}"
+        return 1
+      }
+      
+      fetch_tar() {
+        local url="$1" dest="$2"
+        local tmp
+        tmp="$(mktemp)"
+        wget --no-check-certificate -qO "${tmp}" "${url}" && [ -s "${tmp}" ] \
+          && { tar -xzf "${tmp}" -C "${dest}" 2>/dev/null || tar -xf "${tmp}" -C "${dest}"; } \
+          && rm -f "${tmp}"
+      }
+      
+      fetch_archive() {
+        local url="$1" dest="$2"
+        local tmp
+        tmp="$(mktemp)"
+        wget --no-check-certificate -qO "${tmp}" "${url}" && [ -s "${tmp}" ] \
+          && bsdtar -xf "${tmp}" -C "${dest}" \
+          && rm -f "${tmp}"
+      }
+      
+      link_user() {
+        [ -e "$1" ] || return 1
+        ln -sf "$1" "${BIN}/$(basename "$2")"
+      }
+      
+      link_system() {
+        [ -e "$1" ] || return 1
+        sudo ln -sf "$1" "/usr/local/bin/$(basename "$2")"
+      }
+      
+      mkdir -p "${BIN}" "${HOME}"/{DATA,ewfmount,evidence,.lab}
+      mkdir -p "${TOOLS}"/{hayabusa,memprocfs,trufflehog,noseyparker,pup,vt,nuclei}
+      : > "${FAIL_LOG}"
+      
+      step "apt-update" sudo apt-get update -qq
+      
+      step "apt-forensic-packages" sudo apt-get install -y \
+        afflib-tools attr cewl dc3dd dislocker dnsrecon ewf-tools exifprobe \
+        fcrackzip forensic-artifacts forensics-colorize galleta hashdeep pff-tools \
+        mc recoverdm scrounge-ntfs sleuthkit ssdeep wipe yara ext3grep \
+        libimage-exiftool-perl testdisk geoip-bin mblaze mboxgrep pev unar \
+        tesseract-ocr libvshadow-utils python3.12 python3.12-venv python3-pip \
+        extundelete libarchive-tools ugrep apt-transport-https parallel nikto jq \
+        xmlstarlet poppler-utils xq libplist-utils qpdf tshark wireshark-common \
+        unzip git
+      
+      step "pip-pyapps-core" "${PYAPPS}" -m pip install wheel construct pdfid oletools pyhindsight \
+        auto-archiver xlsxgrep tabulate dnspython domaintools_api evtxtract \
+        parse_smsdb pycryptodome chardet
+      
+      step "pip-dfir-ntfs" "${PYAPPS}" -m pip install \
+        https://github.com/msuhanov/dfir_ntfs/archive/refs/tags/1.1.20.tar.gz
+      
+      step "pip-ioc-scanner" "${PYAPPS}" -m pip install git+https://github.com/cisagov/ioc-scanner.git
+      
+      step "pip-ccl-chromium" "${PYAPPS}" -m pip install git+https://github.com/cclgroupltd/ccl_chromium_reader.git
+      
+      step "pip-edrparser" "${PYAPPS}" -m pip install \
+        https://github.com/0CM/BanditLab/raw/refs/heads/main/packages/edrparser-2.2.0.tar.gz
+      
+      step "prefetcher-download" bash -c "
+        wget --no-check-certificate -q \
+          https://raw.githubusercontent.com/ajread4/prefetcher/refs/heads/main/prefetcher.py \
+          -O '${HOME}/pyapps/bin/prefetcher.py' \
+        && chmod 755 '${HOME}/pyapps/bin/prefetcher.py' \
+        && chmod 755 '${HOME}/pyapps/bin/hindsight.py' '${HOME}/pyapps/bin/hindsight_gui.py' 2>/dev/null || true
+      "
+      
+      ARCH="$(uname -m)"
+      HAYABUSA_VERSION="3.7.0"
+      HAYABUSA_BIN=""
+      
+      if [ "${ARCH}" = "aarch64" ]; then
+        echo "[fortoolsinit] Architecture: aarch64"
+      
+        step "binary-eztools" fetch_tar \
+          "https://github.com/0CM/BanditLab/raw/main/packages/EZTools_aarch64-20240710.tar.gz" "${TOOLS}/"
+        step "binary-sidr" fetch_tar \
+          "https://github.com/0CM/BanditLab/raw/main/packages/sidr_aarch64-20240702.tar.gz" "${TOOLS}/"
+        step "binary-memprocfs" fetch_tar \
+          "https://github.com/ufrisk/MemProcFS/releases/download/v5.17/MemProcFS_files_and_binaries_v5.17.9-linux_aarch64-20260709.tar.gz" \
+          "${TOOLS}/memprocfs"
+        step "binary-hayabusa" fetch_archive \
+          "https://github.com/Yamato-Security/hayabusa/releases/download/v3.10.0/hayabusa-3.10.0-lin-aarch64-gnu.zip" \
+          "${TOOLS}/hayabusa"
+        HAYABUSA_BIN="${TOOLS}/hayabusa/hayabusa-${HAYABUSA_VERSION}-lin-aarch64-gnu"
+        step "binary-trufflehog" fetch_tar \
+          "https://github.com/trufflesecurity/trufflehog/releases/download/v3.95.9/trufflehog_3.95.9_linux_arm64.tar.gz" \
+          "${TOOLS}/trufflehog"
+        step "binary-noseyparker" fetch_tar \
+          "https://github.com/praetorian-inc/noseyparker/releases/download/v0.24.0/noseyparker-v0.24.0-aarch64-unknown-linux-gnu.tar.gz" \
+          "${TOOLS}/noseyparker"
+        step "binary-chainsaw" fetch_tar \
+          "https://github.com/WithSecureLabs/chainsaw/releases/download/v2.16.2/chainsaw_aarch64-unknown-linux-gnu.tar.gz" \
+          "${TOOLS}/"
+        step "binary-timeliner" fetch_tar \
+          "https://github.com/0CM/BanditLab/raw/main/packages/timeliner_aarch64-20240805.tar.gz" "${TOOLS}/"
+        step "binary-pup" fetch_archive \
+          "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_arm64.zip" "${TOOLS}/pup"
+        step "binary-vt" fetch_tar \
+          "https://github.com/0CM/BanditLab/raw/main/packages/vt-cli_aarch64-20240720.tar.gz" "${TOOLS}/vt"
+        step "binary-nuclei" fetch_archive \
+          "https://github.com/projectdiscovery/nuclei/releases/download/v3.11.0/nuclei_3.11.0_linux_arm64.zip" "${TOOLS}/nuclei"
+      
+      elif [ "${ARCH}" = "x86_64" ]; then
+        echo "[fortoolsinit] Architecture: x86_64"
+      
+        step "binary-eztools" fetch_tar \
+          "https://github.com/0CM/BanditLab/raw/main/packages/EZTools_x86_64-20240725.tar.gz" "${TOOLS}/"
+        step "binary-sidr" fetch_tar \
+          "https://github.com/0CM/BanditLab/raw/main/packages/sidr_x86_64-20240725.tar.gz" "${TOOLS}/"
+        step "binary-memprocfs" fetch_tar \
+          "https://github.com/ufrisk/MemProcFS/releases/download/v5.17/MemProcFS_files_and_binaries_v5.17.9-linux_x64-20260709.tar.gz" \
+          "${TOOLS}/memprocfs"
+        step "binary-hayabusa" fetch_archive \
+          "https://github.com/Yamato-Security/hayabusa/releases/download/v3.10.0/hayabusa-3.10.0-lin-x64-musl.zip" \
+          "${TOOLS}/hayabusa"
+        HAYABUSA_BIN="${TOOLS}/hayabusa/hayabusa-${HAYABUSA_VERSION}-lin-x64-musl"
+        step "binary-trufflehog" fetch_tar \
+          "https://github.com/trufflesecurity/trufflehog/releases/download/v3.95.9/trufflehog_3.95.9_linux_amd64.tar.gz" \
+          "${TOOLS}/trufflehog"
+        step "binary-noseyparker" fetch_tar \
+          "https://github.com/praetorian-inc/noseyparker/releases/download/v0.24.0/noseyparker-v0.24.0-x86_64-unknown-linux-gnu.tar.gz" \
+          "${TOOLS}/noseyparker"
+        step "binary-chainsaw" fetch_tar \
+          "https://github.com/WithSecureLabs/chainsaw/releases/download/v2.16.2/chainsaw_x86_64-unknown-linux-gnu.tar.gz" \
+          "${TOOLS}/"
+        step "binary-timeliner" fetch_tar \
+          "https://github.com/0CM/BanditLab/raw/main/packages/timeliner_x86_64-20240805.tar.gz" "${TOOLS}/"
+        step "binary-pup" fetch_archive \
+          "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip" "${TOOLS}/pup"
+        step "binary-vt" fetch_archive \
+          "https://github.com/VirusTotal/vt-cli/releases/download/1.3.1/Linux64.zip" "${TOOLS}/vt"
+        step "binary-nuclei" fetch_archive \
+          "https://github.com/projectdiscovery/nuclei/releases/download/v3.11.0/nuclei_3.11.0_linux_amd64.zip" "${TOOLS}/nuclei"
+        step "odl-download" bash -c "
+          wget --no-check-certificate -q \
+            https://raw.githubusercontent.com/ydkhatri/OneDrive/refs/heads/main/odl.py \
+            -O '${HOME}/pyapps/bin/odl.py' && chmod 755 '${HOME}/pyapps/bin/odl.py'
+        "
+      
+      else
+        echo "[fortoolsinit] ERROR: unsupported architecture: ${ARCH}" >&2
+        exit 1
+      fi
+      
+      step "hayabusa-symlink" bash -c "
+        [ -x '${HAYABUSA_BIN}' ] && chmod 755 '${HAYABUSA_BIN}' \
+          && ln -sf '${HAYABUSA_BIN}' '${TOOLS}/hayabusa/hayabusa'
+      "
+      
+      step "link-pup" bash -c "[ -f '${TOOLS}/pup/pup' ] && chmod 755 '${TOOLS}/pup/pup'"
+      step "link-vt" bash -c "[ -f '${TOOLS}/vt/vt' ] && chmod 755 '${TOOLS}/vt/vt'"
+      step "link-nuclei" bash -c "[ -f '${TOOLS}/nuclei/nuclei' ] && chmod 755 '${TOOLS}/nuclei/nuclei'"
+      
+      step "symlink-pup" link_system "${TOOLS}/pup/pup" pup
+      step "symlink-vt" link_system "${TOOLS}/vt/vt" vt
+      step "symlink-nuclei" link_system "${TOOLS}/nuclei/nuclei" nuclei
+      step "symlink-hayabusa" link_system "${TOOLS}/hayabusa/hayabusa" hayabusa
+      step "symlink-trufflehog" link_system "${TOOLS}/trufflehog/trufflehog" trufflehog
+      step "symlink-noseyparker" link_system "${TOOLS}/noseyparker/bin/noseyparker" noseyparker
+      step "symlink-chainsaw" link_system "${TOOLS}/chainsaw/chainsaw" chainsaw
+      step "symlink-timeliner" link_system "${TOOLS}/timeliner/timeliner" timeliner
+      step "symlink-sidr" link_system "${TOOLS}/sidr/sidr" sidr
+      
+      step "nuclei-update" bash -c "command -v nuclei >/dev/null && nuclei -update"
+      
+      step "recmd-batch-kroll" bash -c "
+        mkdir -p '${TOOLS}/EZTools/RECmd/BatchExamples' \
+        && wget --no-check-certificate -q \
+          https://raw.githubusercontent.com/EricZimmerman/RECmd/refs/heads/master/BatchExamples/Kroll_Batch.reb \
+          -O '${TOOLS}/EZTools/RECmd/BatchExamples/Kroll_Batch.reb'
+      "
+      
+      step "recmd-batch-useractivity" bash -c "
+        wget --no-check-certificate -q \
+          https://raw.githubusercontent.com/EricZimmerman/RECmd/refs/heads/master/BatchExamples/UserActivity.reb \
+          -O '${TOOLS}/EZTools/RECmd/BatchExamples/UserActivity.reb'
+      "
+      
+      echo "[fortoolsinit] Linking EZTools into ~/bin..."
+      for tool in \
+        "MFTECmd:mftecmd" "AmcacheParser:amcacheparser" "bstrings:bstrings" \
+        "EvtxECmd:evtxecmd" "JLECmd:jlecmd" "LECmd:lecmd" "RBCmd:rbcmd" \
+        "RECmd:recmd" "SrumECmd:srumecmd" "RecentFileCacheParser:recentfilecacheparser" \
+        "SQLECmd:sqlecmd" "WxTCmd:wxtcmd" "rla:rla"; do
+        src_name="${tool%%:*}"
+        link_name="${tool##*:}"
+        step "eztool-${link_name}" link_user "${TOOLS}/EZTools/${src_name}/${src_name}" "${link_name}"
+      done
+      
+      step "git-sigma" bash -c "
+        rm -rf '${TOOLS}/chainsaw/sigma' \
+        && git clone --depth 1 https://github.com/SigmaHQ/sigma '${TOOLS}/chainsaw/sigma'
+      "
+      
+      step "git-chainsaw-rules" bash -c "
+        tmpdir=\$(mktemp -d) \
+        && git clone --depth 1 https://github.com/WithSecureLabs/chainsaw.git \"\${tmpdir}/chainsaw\" \
+        && mv \"\${tmpdir}/chainsaw/mappings\" \"\${tmpdir}/chainsaw/rules\" '${TOOLS}/chainsaw/' \
+        && rm -rf \"\${tmpdir}\"
+      "
+      
+      step "git-lynis" git clone --depth 1 https://github.com/CISOfy/lynis "${TOOLS}/lynis"
+      
+      step "hayabusa-update-rules" bash -c "
+        [ -x '${TOOLS}/hayabusa/hayabusa' ] && '${TOOLS}/hayabusa/hayabusa' update-rules
+      "
+      
+      echo ""
+      echo "[fortoolsinit] ========== DEPLOYMENT SUMMARY =========="
+      echo "[fortoolsinit] Succeeded: ${#OK[@]} steps"
+      echo "[fortoolsinit] Failed:    ${#FAILED[@]} steps"
+      
+      if [ "${#FAILED[@]}" -gt 0 ]; then
+        echo "[fortoolsinit] Failed steps:"
+        printf '  - %s\n' "${FAILED[@]}"
+        echo "[fortoolsinit] Details: ${FAIL_LOG}"
+      fi
+      
+      echo "[fortoolsinit] Deployment finished (partial success allowed)."
+      echo "[fortoolsinit] Run 'banditlab-tools' to list installed tools."
+      
+      # Exit 0 so plaso pip install still runs in run-postdeploy.sh
+      exit 0
+    defer: true
+
 runcmd:
-    - sudo update-ca-certificates
-    - sudo -u ubuntu sh -c 'sudo apt update'
-    - sudo -u ubuntu sh -c 'sudo apt install -y libplist-utils python3.12 python3.12-venv python3-pip'
-    - sudo -u ubuntu sh -c 'sudo snap install multipass-sshfs'
-    - sudo -u ubuntu sh -c 'python3 -m venv /home/ubuntu/pyapps'
-    - sudo -u ubuntu sh -c 'python3 -m venv /home/ubuntu/plaso'
-    - sudo -u ubuntu sh -c '/home/ubuntu/pyapps/bin/python3 -m pip install --upgrade pip'
-    - sudo -u ubuntu sh -c '/home/plaso/pyapps/bin/python3 -m pip install --upgrade pip'
+  - update-ca-certificates
+  - apt-get update
+  - DEBIAN_FRONTEND=noninteractive apt-get install -y libplist-utils python3.12 python3.12-venv python3-pip ca-certificates curl wget libarchive-tools unzip git cron
+  - snap install multipass-sshfs || true
+  - install -d -o ubuntu -g ubuntu /home/ubuntu/bin /home/ubuntu/.lab
+  - chown -R ubuntu:ubuntu /home/ubuntu
+  - sudo -u ubuntu python3.12 -m venv /home/ubuntu/pyapps
+  - sudo -u ubuntu python3.12 -m venv /home/ubuntu/plaso
+  - sudo -u ubuntu /home/ubuntu/pyapps/bin/python3 -m pip install --upgrade pip
+  - sudo -u ubuntu /home/ubuntu/plaso/bin/python3 -m pip install --upgrade pip
+  - DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-runtime-6.0 || true
+  - systemctl daemon-reload
+  - systemctl enable banditlab-postdeploy.service
+  - nohup /home/ubuntu/.lab/start-postdeploy-after-cloudinit.sh >> /var/log/banditlab-trigger.log 2>&1 &
+
+final_message: |
+  BanditLab cloud-init bootstrap complete after $UPTIME seconds.
+  Tool deployment starts automatically once cloud-init finishes.
+  Monitor: multipass exec banditlab -- tail -f /home/ubuntu/.lab/postdeploy.log
+  Trigger log: multipass exec banditlab -- sudo tail -f /var/log/banditlab-trigger.log
+  Manual start: multipass exec banditlab -- sudo systemctl start banditlab-postdeploy.service
