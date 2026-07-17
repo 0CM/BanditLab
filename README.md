@@ -28,7 +28,7 @@ The following command will create a VM named BanditLab with 2 CPU cores, 4GB of 
 Universal Cloud-Init for both ARM and X86x64 architectures: 
 ```
 
-multipass launch -n BanditLab -c2 -m 4GB -d 20G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-Universal.yaml
+multipass launch 24.04 -n BanditLab -c2 -m 4GB -d 20G --cloud-init https://github.com/0CM/BanditLab/raw/main/BanditLab-Universal.yaml
 
 ```
 
